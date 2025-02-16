@@ -158,8 +158,8 @@ def PNSR(original_img, new_img):
         o_pixels = np.array(original_img)
         n_pixels = np.array(new_img)
 
-        oh, ow, c = original_img.shape()
-        nh, nw, _ = new_img.shape()
+        oh, ow, c = o_pixels.shape
+        nh, nw, _ = n_pixels.shape
 
         pixel_count = oh*ow
 

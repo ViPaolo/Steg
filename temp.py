@@ -3,6 +3,7 @@ try:
     from PIL import Image
     import os
     import sys
+    import math
 except ImportError as e:
     raise ImportError(f"Missing dependencies: {e}. Install them with 'pip install -requirements.txt'")
 
@@ -136,6 +137,37 @@ def Decode_Image(img : Image.Image) -> str:
     return message
 
 
+def PNSR(original_img, new_img):
+
+
+    s = 255 #we define the max possible value as 255
+
+    def MSE(original_img, new_img):
+
+        o_pixels = np.array(original_img)
+        print(o_pixels)
+        n_pixels = np.array(new_img)
+
+        oh, ow, c = o_pixels.shape
+        print(c)
+        nh, nw, _ = n_pixels.shape
+
+        pixel_count = oh*ow
+
+        dev = 0
+        for i in range(oh):
+            for j in range(ow):
+                if np.array_equal(o_pixels[i,j], n_pixels[i,j]):
+                    continue
+                else: 
+                    for i in range(c):
+                        dev += (n_pixels[i,j,c]-o_pixels[i,j,c])**2
+    
+        return dev/pixel_count
+    
+    
+    return 20*math.log10(s/math.sqrt(MSE(original_img, new_img)))
+
 
 #Generate Image 
 
@@ -152,6 +184,7 @@ encoded.convert("RGB")
 
 decoded = Decode_Image(encoded)
 print(decoded)
+print(PNSR(img, encoded))
 
 n1 = np.array([1,2,1])
 n2 = np.array([1,2,1])
