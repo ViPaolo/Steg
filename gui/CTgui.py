@@ -2,7 +2,7 @@ import tkinter
 import tkinter.messagebox
 import customtkinter
 import os
-from ..src.steg import *
+from src.steg import *
 from customtkinter import filedialog
 
 
@@ -22,11 +22,7 @@ def askdirectory():
     print("button pressed")
     filedialog.askdirectory(title="Select a folder")
 
-frame = customtkinter.CTkFrame(master=app)
-frame.place(relx= 0.3, rely= 0.2, anchor=customtkinter.CENTER)
-
 label = customtkinter.CTkLabel(master=app, text="Ciao!", font=("Helveticaca", 20), text_color="#FFFF90")
-
 label.place(relx = 0.5, rely= 0.2, anchor = customtkinter.CENTER)
 
 

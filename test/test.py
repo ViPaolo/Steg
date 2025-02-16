@@ -9,7 +9,7 @@ try:
     import pytest
     import math
 #We need to import also the functions:
-    from src.steg import Encode_Image,Decode_Image,PNSR #this allow relative 
+    from src.steg import Encode_Image,Decode_Image,PNSR  #relative import, use it only if you install the repo as package!
 
 except ImportError as e:
     raise ImportError(f"The following module cannot be imported: {e}. Install the required dependencies with 'pip install -r requirements.txt'. ")
