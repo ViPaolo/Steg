@@ -9,7 +9,7 @@ try:
     import pytest
     import math
 #We need to import also the functions:
-    from src.steg import Encode_Image,Decode_Image,PNSR  #relative import, use it only if you install the repo as package!
+    from src.steg import Encode_Image,Decode_Image,PSNR  #relative import, use it only if you install the repo as package!
 
 except ImportError as e:
     raise ImportError(f"The following module cannot be imported: {e}. Install the required dependencies with 'pip install -r requirements.txt'. ")
@@ -179,6 +179,47 @@ def test_maximum_capacity_message():
     decoded_message = Decode_Image(encoded_img)
     assert decoded_message == message
 
+def test_psnr_equal_images():
+    """
+    
+    Test for psnr, it compares two equal images and returns its psnr.
+
+
+    Input_image: a 10x10 white image. 
+    New_image: a 10x10 white image. 
+
+    The test is passed a PSNR equal infinite, as the MSE (denominator) is zero. 
+
+    """
+
+    img = Image.new("RGB", (10,10), color="white")
+    img2 = img
+    
+    psnr = PSNR(img, img2)
+
+    assert psnr == float('inf')
+
+
+def test_psnr_opposite_images():
+    """
+    
+    Test for psnr, it compares a black and white image and returns its psnr.
+
+    Input_image: a 10x10 white image. 
+    New_image: a 10x10 black image. 
+
+    The test is passed if the PSNR equals 0.
+
+    """
+
+    img = Image.new("RGB", (10,10), color="white")
+    img2 = Image.new("RGB", (10,10), color="black")
+
+    
+
+    psnr = PSNR(img, img2)
+
+    assert psnr == 0
 
 
 
@@ -192,4 +233,6 @@ if __name__ == "__main__":
     test_non_rgb_image_conversion()
     test_invalid_utf8()
     test_maximum_capacity_message()
+    test_psnr_equal_images()
+    test_psnr_opposite_images()
     print("All tests passed!")

@@ -31,8 +31,6 @@ btn = customtkinter.CTkButton(master=app, text="Ciao! Cliccami per aprire una ca
 btn.place(relx = 0.5, rely = 0.3, anchor = customtkinter.CENTER)
 
 
-
-
 app.mainloop()
 
 

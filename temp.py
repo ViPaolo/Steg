@@ -137,37 +137,25 @@ def Decode_Image(img : Image.Image) -> str:
     return message
 
 
-def PNSR(original_img, new_img):
+def PSNR(original_img, new_img):
 
-
-    s = 255 #we define the max possible value as 255
-
-    def MSE(original_img, new_img):
-
-        o_pixels = np.array(original_img)
-        print(o_pixels)
-        n_pixels = np.array(new_img)
-
-        oh, ow, c = o_pixels.shape
-        print(c)
-        nh, nw, _ = n_pixels.shape
-
-        pixel_count = oh*ow
-
-        dev = 0
-        for i in range(oh):
-            for j in range(ow):
-                if np.array_equal(o_pixels[i,j], n_pixels[i,j]):
-                    continue
-                else: 
-                    for i in range(c):
-                        dev += (n_pixels[i,j,c]-o_pixels[i,j,c])**2
+    o_pixels = np.array(original_img)
+    n_pixels = np.array(new_img)
     
-        return dev/pixel_count
+    # Compute Mean Squared Error (MSE)
+    mse = np.mean((o_pixels - n_pixels) ** 2)
     
+    if mse == 0:
+        return float('inf')  # No error => infinite PSNR
     
-    return 20*math.log10(s/math.sqrt(MSE(original_img, new_img)))
+    # Max possible pixel value
 
+    s = 255.0
+
+    #PSNR formula
+    psnr = 20 * np.log10(s / np.sqrt(mse))
+    return psnr
+                    
 
 #Generate Image 
 
@@ -178,13 +166,58 @@ print(img)
 
 encoded = Encode_Image(img, "OH MA COME TI PERMETTI.")
 
-encoded.convert("CMYK")
+# encoded.convert("CMYK")
+
+pixels = np.array(encoded)
+
+# h, w, c = pixels.shape
+
+# for i in range(h):
+#     for j in range(w):
+#         for ch in range(c):
+#             print(pixels[i,j,ch])
+
+def test_psnr_opposite_images():
+    """
+    
+    Test for psnr, it compares a black and white image and returns its psnr.
+
+    Input_image: a 10x10 white image. 
+    New_image: a 10x10 black image. 
+
+    The test is passed if the PSNR equals 0.
+
+    """
+
+    img = Image.new("RGB", (10,10), color="white")
+    img2 = Image.new("RGB", (10,10), color="black")
+
+    
+
+    psnr = PSNR(img, img2)
+
+    assert psnr == 0
+
+
+
 
 encoded.convert("RGB")
 
 decoded = Decode_Image(encoded)
 print(decoded)
-print(PNSR(img, encoded))
+print(PSNR(img, encoded))
+
+img1 = Image.new("RGB", (10,10), color="white")
+img12 = Image.new("RGB", (10,10), color="black")
+
+
+
+print(np.array(img1).mean(), np.array(img12).mean())
+print((np.array(img1).mean() - np.array(img12).mean())**2)
+
+print(PSNR(img1, img12))
+
+
 
 n1 = np.array([1,2,1])
 n2 = np.array([1,2,1])

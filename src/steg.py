@@ -3,7 +3,6 @@ try:
     from PIL import Image
     import os
     import sys
-    import math
 except ImportError as e:
     raise ImportError(f"Missing dependencies: {e}. Install them with 'pip install -r requirements.txt'")
 
@@ -148,34 +147,24 @@ def Decode_Image(img : Image.Image) -> str:
         
     return message
 
-def PNSR(original_img, new_img):
+def PSNR(original_img, new_img):
 
-
-    s = 255 #we define the max possible value as 255
-
-    def MSE(original_img, new_img):
-
-        o_pixels = np.array(original_img)
-        n_pixels = np.array(new_img)
-
-        oh, ow, c = o_pixels.shape
-        nh, nw, _ = n_pixels.shape
-
-        pixel_count = oh*ow
-
-        dev = 0
-        for i in range(oh):
-            for j in range(ow):
-                if np.array_equal(o_pixels[i,j], n_pixels[i,j]):
-                    continue
-                else: 
-                    for i in range(c):
-                        dev += (n_pixels[i,j,c]-o_pixels[i,j,c])**2
+    o_pixels = np.array(original_img)
+    n_pixels = np.array(new_img)
     
-        return dev/pixel_count
+    # Compute Mean Squared Error (MSE)
+    mse = np.mean((o_pixels - n_pixels) ** 2)
+
+    if mse == 0:
+        return float('inf')  # No error => infinite PSNR
     
-    
-    return 20*math.log10(s/math.sqrt(MSE(original_img, new_img)))
+    # Max possible pixel value
+
+    s = 255.0
+
+    #PSNR formula
+    psnr = 20 * np.log10(s / np.sqrt(mse))
+    return psnr
                     
 
 
