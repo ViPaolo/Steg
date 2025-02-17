@@ -1,7 +1,7 @@
 ## TO RUN THE PYTEST, after you have installed the pytest package, simply run: 
     # pytest Test/test.py in the root folder. 
 
-#to run the package, pytest requires the name of the package to be 
+#to run the package, pytest requires the name of the package to be declared.
 
 try:
     import numpy as np
