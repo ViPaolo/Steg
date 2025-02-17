@@ -149,8 +149,8 @@ def Decode_Image(img : Image.Image) -> str:
 
 def PSNR(original_img, new_img):
 
-    o_pixels = np.array(original_img)
-    n_pixels = np.array(new_img)
+    o_pixels = np.array(original_img).astype(np.float64) #Declaring the type of the image made the test pass. Idk why, something with the data types probably. We need to investigate further. 
+    n_pixels = np.array(new_img).astype(np.float64)
     
     # Compute Mean Squared Error (MSE)
     mse = np.mean((o_pixels - n_pixels) ** 2)
