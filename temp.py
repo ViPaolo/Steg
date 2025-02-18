@@ -217,7 +217,9 @@ print((np.array(img1).mean() - np.array(img12).mean())**2)
 
 print(PSNR(img1, img12))
 
-
+lenna = Image.open(r"D:\Development\Projects\Study-Work\Multimedia-Stenography\Stenography\Lenna.png")
+new_lenna = Encode_Image(lenna, "prova prova sa sa sa")
+save = new_lenna.save(r"D:\Development\Projects\Study-Work\Multimedia-Stenography\Stenography\Lenna_converted2.png")
 
 n1 = np.array([1,2,1])
 n2 = np.array([1,2,1])
