@@ -4,7 +4,7 @@ try:
     import os
     import sys
 except ImportError as e:
-    raise ImportError(f"Missing dependencies: {e}. Install them with 'pip install -rdrequirements.txt'")
+    raise ImportError(f"Missing dependencies: {e}. Install them with 'pip install -r requirements.txt'")
 
 def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
     """
@@ -15,7 +15,7 @@ def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
 
             txt(str): The text we want to include in UTF-8 encoding. The length of the text must not be larger than the HxWx3.
 
-            
+    
 
     Returns: 
         Image(Image.Image): The new image with the encoded message.
@@ -29,7 +29,7 @@ def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
         if img.mode != "RGB":
             img = img.convert("RGB")
     except:
-        raise ValueError("The Image is not in RGB format")
+        raise ValueError("The Image is not in RGB format nor it can be converted. Please use another image.")
 
     #Transforms the pixel in a matrix containing 3-vector values. 
     pixels = np.array(img)
@@ -37,11 +37,12 @@ def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
 
     #Encode message in bytes
     txt_bin = txt.encode('utf-8') + b'\x00' #Terminating bit
-    #The code is already converted (internally, we'll se a sequence of byte), 
+
+    #The code is already converted (internally, we'll se a list of byte), 
     # but to represent them in a sequence of bits (and not int) we need to convert them in a binary string.  
     txt_bits = "".join(f'{byte:08b}' for byte in txt_bin) #byte:08b ensures each type is represented in exactly 8 bits. 
 
-
+    #Preliminary check to see if the message can be contained in the image
     if len(txt_bits) > height * width * 3:
         raise ValueError("The image is too small to contain the message in the UTF Encoding. Choose another image or make this one larger.")
 
@@ -57,10 +58,11 @@ def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
                 #extract the channel.
                 rd, gr, bl = pixels[h, w]
                 if bit_count < len(txt_bits):
-                    #254 is 11111110, so the bitwise AND clears the LSB
+
+                    #254 is 11111110, so the bitwise AND clears and set the LSB to 0
                     #txt_bits[bit_count] returns the i-th bit, the OR operation then will be between 
-                    # original pixel channel OR original bit (00000001 or 00000000)
-                    #If then 
+                    # original pixel channel OR original bit (00000001 or 00000000), if the i-th bit is zero, then the code will start to make them appear.  
+                    
                     rd= (rd & 254) | int(txt_bits[bit_count]) 
                     bit_count += 1
                 if bit_count < len(txt_bits):
@@ -75,16 +77,35 @@ def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
 
 
 
-    new_img = Image.fromarray(pixels, "RGB")
+    new_img = Image.fromarray(pixels, "RGB") #Recreate the new image
     return new_img
 
 
 def Decode_Image(img : Image.Image) -> str:
 
+    """
+    Decode a text message from the LSBs of the image. 
+
+    Parameters: 
+            Image(Image.Image): The input image.
+            
+
+    Returns: 
+        text: The text from the devised message.
+
+    Note that, although some checks can be made to , it may output valid strings although the image had not been encoded yet. 
+    Use only with images you have the 
+    """
+
     #The image encoded with this method should be natively RGB. However, the userdmay have changed some options ordencoding. 
     #It is with the philosophy of allowing the userdto use it in changing the image. 
-    if img.mode != "RGB":
-        img = img.convert("RGB")
+    
+    try:
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+    except:
+            raise ValueError("The Image is not in RGB format nor it can be converted. Please use another image.")
+
         
 
     pixels = np.array(img)
@@ -125,3 +146,26 @@ def Decode_Image(img : Image.Image) -> str:
         raise ValueError(f"Error decoding message. Invalid UTF-8 sequence: {e}")
         
     return message
+
+def PSNR(original_img, new_img):
+
+    o_pixels = np.array(original_img).astype(np.float64) #Declaring the type of the image made the test pass. Idk why, something with the data types probably. We need to investigate further. 
+    n_pixels = np.array(new_img).astype(np.float64)
+    
+    # Compute Mean Squared Error (MSE)
+    mse = np.mean((o_pixels - n_pixels) ** 2)
+
+    if mse == 0:
+        return float('inf')  # No error => infinite PSNR
+    
+    # Max possible pixel value
+
+    s = 255.0
+
+    #PSNR formula
+    psnr = 20 * np.log10(s / np.sqrt(mse))
+    return psnr
+                    
+
+
+            
