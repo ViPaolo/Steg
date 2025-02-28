@@ -17,6 +17,6 @@ You can manually build an .exe file from the code with pyinstaller by doing the 
 1. Clone the repository locally.
 2. (Optional) Activate a virtual environment. You can activate a virtual environment in python by using [this guide](https://docs.python.org/3/tutorial/venv.html)
 3. Install the required dependencies. You can do so by simply writing `py -m pip install -r requirements.txt`
-4. Run the pyinstaller. To avoid the need for dependencies, I include all of them and make a portable version with the following line (it must be run from the repo's main folder directory): `pyinstaller --name "Steg" --onefile --windowed --add-data "src;src" gui/CTgui.py`
+4. Run the pyinstaller. To avoid the need for dependencies, I include all of them and make a portable version with the following line (it must be run from the repo's main folder directory): `pyinstaller --name "Steg" --onefile --windowed --add-data "src;src" gui/CTgui.py`. Alternatively, you can see if there is any stable distribution on the 'releases' tab.
 
 
