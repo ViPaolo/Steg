@@ -2,8 +2,6 @@ try:
     import numpy as np
     from PIL import Image
     import os
-    import sys
-    import math
 except ImportError as e:
     raise ImportError(f"Missing dependencies: {e}. Install them with 'pip install -requirements.txt'")
 
@@ -15,7 +13,7 @@ except ImportError as e:
 
 
 
-def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
+def encode_image(img: Image.Image, txt : str) -> Image.Image:
     """
     Embed a message on LSB of the image. 
 
@@ -88,7 +86,7 @@ def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
     return new_img
 
 
-def Decode_Image(img : Image.Image) -> str:
+def decode_image(img : Image.Image) -> str:
 
     #The image encoded with this method should be natively RGB. However, the user may have changed some options or encoding. 
     #It is with the philosophy of allowing the user to use it in changing the image.
@@ -137,7 +135,7 @@ def Decode_Image(img : Image.Image) -> str:
     return message
 
 
-def PSNR(original_img, new_img):
+def psnr(original_img, new_img):
 
     o_pixels = np.array(original_img)
     n_pixels = np.array(new_img)
@@ -146,13 +144,13 @@ def PSNR(original_img, new_img):
     mse = np.mean((o_pixels - n_pixels) ** 2)
     
     if mse == 0:
-        return float('inf')  # No error => infinite PSNR
+        return float('inf')  # No error => infinite psnr
     
     # Max possible pixel value
 
     s = 255.0
 
-    #PSNR formula
+    #psnr formula
     psnr = 20 * np.log10(s / np.sqrt(mse))
     return psnr
                     
@@ -164,7 +162,7 @@ def PSNR(original_img, new_img):
 img = Image.open(os.path.join(os.path.dirname(__file__), r"Lenna.png"))
 print(img)
 
-encoded = Encode_Image(img, "OH MA COME TI PERMETTI.")
+encoded = encode_image(img, "OH MA COME TI PERMETTI.")
 
 # encoded.convert("CMYK")
 
@@ -185,7 +183,7 @@ def test_psnr_opposite_images():
     Input_image: a 10x10 white image. 
     New_image: a 10x10 black image. 
 
-    The test is passed if the PSNR equals 0.
+    The test is passed if the psnr equals 0.
 
     """
 
@@ -194,7 +192,7 @@ def test_psnr_opposite_images():
 
     
 
-    psnr = PSNR(img, img2)
+    psnr = psnr(img, img2)
 
     assert psnr == 0
 
@@ -203,9 +201,9 @@ def test_psnr_opposite_images():
 
 encoded.convert("RGB")
 
-decoded = Decode_Image(encoded)
+decoded = decode_image(encoded)
 print(decoded)
-print(PSNR(img, encoded))
+print(psnr(img, encoded))
 
 img1 = Image.new("RGB", (10,10), color="white")
 img12 = Image.new("RGB", (10,10), color="black")
@@ -215,10 +213,10 @@ img12 = Image.new("RGB", (10,10), color="black")
 print(np.array(img1).mean(), np.array(img12).mean())
 print((np.array(img1).mean() - np.array(img12).mean())**2)
 
-print(PSNR(img1, img12))
+print(psnr(img1, img12))
 
 lenna = Image.open(r"D:\Development\Projects\Study-Work\Multimedia-Stenography\Stenography\Lenna.png")
-new_lenna = Encode_Image(lenna, "prova prova sa sa sa")
+new_lenna = encode_image(lenna, "prova prova sa sa sa")
 save = new_lenna.save(r"D:\Development\Projects\Study-Work\Multimedia-Stenography\Stenography\Lenna_converted2.png")
 
 n1 = np.array([1,2,1])

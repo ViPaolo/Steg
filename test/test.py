@@ -9,7 +9,7 @@ try:
     import pytest
     import math
 #We need to import also the functions:
-    from src.steg import Encode_Image,Decode_Image,PSNR  #relative import, use it only if you install the repo as package!
+    from src.steg import encode_image,decode_image,psnr  #relative import, use it only if you install the repo as package!
 
 except ImportError as e:
     raise ImportError(f"The following module cannot be imported: {e}. Install the required dependencies with 'pip install -r requirements.txt'. ")
@@ -27,8 +27,8 @@ def test_encode_decode_ascii():
     img = Image.new("RGB", (20,20), color="white")
     message = "Ciao, amole."
 
-    encoded_img = Encode_Image(img, message)
-    decoded_message = Decode_Image(encoded_img)
+    encoded_img = encode_image(img, message)
+    decoded_message = decode_image(encoded_img)
 
     assert decoded_message == message
 
@@ -44,8 +44,8 @@ def test_encode_decode_non_ascii():
     img = Image.new("RGB", (40,40), color="white")
     message = "こんにちは世界"
 
-    encoded_img = Encode_Image(img, message)
-    decoded_message = Decode_Image(encoded_img)
+    encoded_img = encode_image(img, message)
+    decoded_message = decode_image(encoded_img)
 
     assert decoded_message == message
 
@@ -61,8 +61,8 @@ def test_encode_decode_emoji():
     img = Image.new("RGB", (40,40), color="white")
     message = "😊"
 
-    encoded_img = Encode_Image(img, message)
-    decoded_message = Decode_Image(encoded_img)
+    encoded_img = encode_image(img, message)
+    decoded_message = decode_image(encoded_img)
 
     assert decoded_message == message
 
@@ -80,8 +80,8 @@ def test_empty_message():
     """
     img = Image.new("RGB", (10, 10), color="white")
     message = ""
-    encoded_img = Encode_Image(img, message)
-    decoded_message = Decode_Image(encoded_img)
+    encoded_img = encode_image(img, message)
+    decoded_message = decode_image(encoded_img)
     assert decoded_message == message
 
 
@@ -105,7 +105,7 @@ def test_ascii_message_too_large():
     # "e use the context manager to capture the ValueError with the Pytest method.
     #  We use with as context manager because we expect an error and then close the process.
     with pytest.raises(ValueError):
-        Encode_Image(img, message)
+        encode_image(img, message)
 
 def test_non_ascii_message_too_large():
     """
@@ -121,7 +121,7 @@ def test_non_ascii_message_too_large():
     img = Image.new("RGB", (4, 4), color="white")
     message = "😊😊"
     with pytest.raises(ValueError):
-        Encode_Image(img, message)
+        encode_image(img, message)
 
 
 
@@ -138,10 +138,10 @@ def test_non_rgb_image_conversion():
     img = Image.new("L", (20, 20), color="white")
     message = "Ciao, tesoro."
 
-    encoded_img = Encode_Image(img, message)
+    encoded_img = encode_image(img, message)
     # The resulting image should be in RGB mode
     assert encoded_img.mode == "RGB"
-    decoded_message = Decode_Image(encoded_img)
+    decoded_message = decode_image(encoded_img)
     assert decoded_message == message
 
 def test_invalid_utf8():
@@ -161,7 +161,7 @@ def test_invalid_utf8():
     img_invalid = Image.fromarray(arr, "RGB")
 
     with pytest.raises(ValueError):
-        Decode_Image(img_invalid)
+        decode_image(img_invalid)
 
 def test_maximum_capacity_message():
     """
@@ -175,8 +175,8 @@ def test_maximum_capacity_message():
 
     img = Image.new("RGB", (4, 4), color="white")
     message = "Honey"
-    encoded_img = Encode_Image(img, message)
-    decoded_message = Decode_Image(encoded_img)
+    encoded_img = encode_image(img, message)
+    decoded_message = decode_image(encoded_img)
     assert decoded_message == message
 
 def test_psnr_equal_images():
@@ -188,16 +188,16 @@ def test_psnr_equal_images():
     Input_image: a 10x10 white image. 
     New_image: a 10x10 white image. 
 
-    The test is passed a PSNR equal infinite, as the MSE (denominator) is zero. 
+    The test is passed a psnr equal infinite, as the MSE (denominator) is zero. 
 
     """
 
     img = Image.new("RGB", (10,10), color="white")
     img2 = img
     
-    psnr = PSNR(img, img2)
+    psnr_results = psnr(img, img2)
 
-    assert psnr == float('inf')
+    assert psnr_results == float('inf')
 
 
 def test_psnr_opposite_images():
@@ -208,7 +208,7 @@ def test_psnr_opposite_images():
     Input_image: a 10x10 white image. 
     New_image: a 10x10 black image. 
 
-    The test is passed if the PSNR equals 0.
+    The test is passed if the psnr equals 0.
 
     """
 
@@ -217,9 +217,9 @@ def test_psnr_opposite_images():
 
     
 
-    psnr = PSNR(img, img2)
+    psnr_results = psnr(img, img2)
 
-    assert psnr == 0
+    assert psnr_results == 0
 
 
 
