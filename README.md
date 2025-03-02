@@ -8,7 +8,7 @@ The repo is built around 3 folders.
 
 1. **src**, which contains the main python file with the necessary modules for encoding, decoding and SRC.
 2. **gui**, which containes the main folder structure.
-3. **test**, some tests made by pytest to check for edge cases in the src folder
+3. **test**, some tests made by pytest to check for edge cases in the src folder.
 
 ## Installation
 
