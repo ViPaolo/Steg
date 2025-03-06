@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox
 import os
 from PIL import Image
 ## TO RUN IT WITHOUT PROBLEMS, ensure __init__.py exists in the src folder and run it from the root folder with 'python gui\CTgui.py' in windows or 'python gui/CTgui.py' 
-from src.steg import encode_image, decode_image, psnr  # Assuming these functions are in steganography.py
+from src.steg import encode_image, decode_image, PSNR  # Assuming these functions are in steganography.py
 
 
 class SteganographyGUI(ctk.CTk):
@@ -176,7 +176,7 @@ class SteganographyGUI(ctk.CTk):
                     encoded = encode_image(im, message)
                     encoded.save(output_path)
                     # Calculate PSNR
-                    psnr_value = psnr(im, encoded)
+                    psnr_value = PSNR(im, encoded)
 
                     self.status_text.delete("1.0", "end")
                     self.status_text.insert("1.0", f"Image encoded successfully!\nPSNR Value: {psnr_value:.2f} dB")
