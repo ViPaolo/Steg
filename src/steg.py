@@ -6,7 +6,7 @@ try:
 except ImportError as e:
     raise ImportError(f"Missing dependencies: {e}. Install them with 'pip install -r requirements.txt'")
 
-def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
+def encode_image(img: Image.Image, txt : str) -> Image.Image:
     """
     Embed a message on LSB of the image. 
 
@@ -81,7 +81,7 @@ def Encode_Image(img: Image.Image, txt : str) -> Image.Image:
     return new_img
 
 
-def Decode_Image(img : Image.Image) -> str:
+def decode_image(img : Image.Image) -> str:
 
     """
     Decode a text message from the LSBs of the image. 
