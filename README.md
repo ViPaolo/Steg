@@ -12,7 +12,9 @@ The repo is built around 3 folders.
 
 ## Installation
 
-You can manually build an .exe file from the code with pyinstaller by doing the following steps:
+On the [release](https://github.com/ViPaolo/Steg/releases/tag/Beta) tab, you can find the .exe file and directly use the tool. 
+
+If you want, you can manually build an .exe file from the code with pyinstaller by doing the following steps:
 
 1. Clone the repository locally.
 2. (Optional) Activate a virtual environment. You can activate a virtual environment in python by using [this guide](https://docs.python.org/3/tutorial/venv.html)
